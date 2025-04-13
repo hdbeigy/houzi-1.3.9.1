@@ -1,57 +1,245 @@
-import 'package:houzi/hooks_v2.dart';
-import 'package:houzi_package/houzi_main.dart' as houzi_package;
+// import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:intl/intl.dart';
+import 'package:jakojast/common/constants.dart';
+import 'package:jakojast/files/app_preferences/app_preferences.dart';
+import 'package:jakojast/files/configurations/app_configurations.dart';
+import 'package:jakojast/files/hive_storage_files/hive_storage_manager.dart';
+import 'package:jakojast/files/hooks_files/hooks_configurations.dart';
+import 'package:jakojast/files/item_design_files/item_design_notifier.dart';
+import 'package:jakojast/files/theme_service_files/theme_notifier.dart';
+import 'package:jakojast/l10n/features_localization.dart';
+import 'package:jakojast/l10n/l10n.dart';
+import 'package:jakojast/pages/main_screen_pages/my_home_page.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
 
-Future<void> main() async {
-  HooksV2 v2Hooks = HooksV2();
-  Map<String,dynamic> hooksMap = {};
+import 'providers/state_providers/locale_provider.dart';
+import 'providers/state_providers/user_log_provider.dart';
 
-  hooksMap["headers"] = v2Hooks.getHeaderMap();
-  hooksMap["propertyDetailPageIcons"] = v2Hooks.getPropertyDetailPageIconsMap();
-  hooksMap["elegantHomeTermsIcons"] = v2Hooks.getElegantHomeTermsIconMap();
-  hooksMap["drawerItems"] = v2Hooks.getDrawerItems();
-  hooksMap["fonts"] = v2Hooks.getFontHook();
-  hooksMap["propertyItem"] = v2Hooks.getPropertyItemHook();
-  hooksMap["propertyItemV2"] = v2Hooks.getPropertyItemHookV2();
-  hooksMap["propertyItemHeightHook"] = v2Hooks.getPropertyItemHeightHook();
-  hooksMap["termItem"] = v2Hooks.getTermItemHook();
-  hooksMap["agentItem"] = v2Hooks.getAgentItemHook();
-  hooksMap["agencyItem"] = v2Hooks.getAgencyItemHook();
-  hooksMap["widgetItems"] = v2Hooks.getWidgetHook();
-  hooksMap["languageNameAndCode"] = v2Hooks.getLanguageCodeAndName();
-  hooksMap["defaultLanguageCode"] = v2Hooks.getDefaultLanguageHook();
-  hooksMap["defaultHomePage"] = v2Hooks.getDefaultHomePageHook();
-  hooksMap["defaultCountryCode"] = v2Hooks.getDefaultCountryCodeHook();
-  hooksMap["settingsOption"] = v2Hooks.getSettingsItemHook();
-  hooksMap["profileItem"] = v2Hooks.getProfileItemHook();
-  hooksMap["homeRightBarButtonWidget"] = v2Hooks.getHomeRightBarButtonWidgetHook();
-  hooksMap["markerTitle"] = v2Hooks.getMarkerTitleHook();
-  hooksMap["markerIcon"] = v2Hooks.getMarkerIconHook();
-  hooksMap["customMapMarker"] = v2Hooks.getCustomMarkerHook();
-  hooksMap["priceFormatter"] = v2Hooks.getPriceFormatterHook();
-  hooksMap["compactPriceFormatter"] = v2Hooks.getCompactPriceFormatterHook();
-  hooksMap["textFormFieldCustomizationHook"] = v2Hooks.getTextFormFieldCustomizationHook();
-  hooksMap["textFormFieldWidgetHook"] = v2Hooks.getTextFormFieldWidgetHook();
-  hooksMap["customSegmentedControlHook"] = v2Hooks.getCustomSegmentedControlHook();
-  hooksMap["drawerHeaderHook"] = v2Hooks.getDrawerHeaderHook();
-  hooksMap["hidePriceHook"] = v2Hooks.getHidePriceHook();
-  hooksMap["hideEmptyTerm"] = v2Hooks.hideEmptyTerm();
-  hooksMap["customMapMarker"] = v2Hooks.getCustomMarkerHook();
-  hooksMap["homeSliverAppBarBodyHook"] = v2Hooks.getHomeSliverAppBarBodyHook();
-  hooksMap["homeWidgetsHook"] = v2Hooks.getHomeWidgetsHook();
-  hooksMap["drawerWidgetsHook"] = v2Hooks.getDrawerWidgetsHook();
-  hooksMap["membershipPlanHook"] = v2Hooks.getMembershipPlanHook();
-  hooksMap["membershipPackageUpdatedHook"] = v2Hooks.getMembershipPackageUpdatedHook();
-  hooksMap["paymentHook"] = v2Hooks.getPaymentHook();
-  hooksMap["paymentSuccessfulHook"] = v2Hooks.getPaymentSuccessfulHook();
-  hooksMap["addPlusButtonInBottomBarHook"] = v2Hooks.getAddPlusButtonInBottomBarHook();
-  hooksMap["navbarWidgetsHook"] = v2Hooks.getNavbarWidgetsHook();
-  hooksMap["clusterMarkerIconHook"] = v2Hooks.getCustomizeClusterMarkerIconHook();
-  hooksMap["customClusterMarkerIconHook"] = v2Hooks.getCustomClusterMarkerIconHook();
-  hooksMap["membershipPayWallDesignHook"] = v2Hooks.getMembershipPayWallDesignHook();
-  hooksMap["minimumPasswordLengthHook"] = v2Hooks.getMinimumPasswordLengthHook();
-  hooksMap["agentProfileConfigurationsHook"] = v2Hooks.getAgentProfileConfigurationsHook();
-  return houzi_package.main("assets/configurations/configurations.json", hooksMap);
+Future<void> main(configurationsFilePath, Map<String, dynamic> hooksMap) async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // Firebase.initializeApp();
+  await HiveStorageManager.openHiveBox();
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+
+  HooksConfigurations.setHooks(hooksMap);
+
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ThemeNotifier>(create: (_) => ThemeNotifier()),
+        ChangeNotifierProvider<ItemDesignNotifier>(create: (_) => ItemDesignNotifier()),
+        ChangeNotifierProvider<LocaleProvider>(create: (_) => LocaleProvider()),
+        ChangeNotifierProvider<UserLoggedProvider>(create: (_) => UserLoggedProvider()),
+      ],
+      child: MyApp(configurationsFilePath, fontsHook: hooksMap["fonts"]),
+    ),
+  );
 }
 
+typedef FontsHook = String Function(Locale locale);
+
+class MyApp extends StatefulWidget {
+  final String configurationsFilePath;
+  final FontsHook? fontsHook;
+
+  const MyApp(this.configurationsFilePath,{Key? key, this.fontsHook}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+
+  // final DeepLinkBloc _bloc = DeepLinkBloc();
+
+  @override
+  void initState() {
+
+    AppConfigurations appConfigurations = AppConfigurations(
+        filePath: widget.configurationsFilePath,
+        appConfigurationsListener: (bool areConfigsIntegrated){
+          if(areConfigsIntegrated){
+            setState(() {});
+          }
+        }
+    );
+    //
+    appConfigurations.integrateConfigurations();
+
+    HiveStorageManager.deleteUrl();
+    // HiveStorageManager.deleteUrlAuthority();
+    // HiveStorageManager.deleteCommunicationProtocol();
+    HiveStorageManager.deleteAgentCitiesMetaData();
+    HiveStorageManager.deleteAgentCategoriesMetaData();
+
+    PackageInfo.fromPlatform().then((PackageInfo packageInfo) {
+      String appName = packageInfo.appName;
+      String packageName = packageInfo.packageName;
+      String version = packageInfo.version;
+      String buildNumber = packageInfo.buildNumber;
+      HiveStorageManager.storeAppInfo(appInfo: {
+        APP_INFO_APP_NAME : appName,
+        APP_INFO_APP_PACKAGE_NAME : packageName,
+        APP_INFO_APP_VERSION : version,
+        APP_INFO_APP_BUILD_NUMBER : buildNumber,
+      });
+    });
+
+    super.initState();
+  }
+
+  // Future<String> startUri() async {
+  //   try {
+  //     return platform.invokeMethod('initialLink');
+  //   } on PlatformException catch (e) {
+  //     return "Failed to Invoke: '${e.message}'.";
+  //   }
+  // }
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<ThemeNotifier>(
+      builder: (context, theme, child) {
+        return Consumer<LocaleProvider>(
+            builder: (context, localeProvider, child) {
+              return MaterialApp(
+                title: APP_NAME,
+                locale: const Locale('fa'),
+                supportedLocales: L10n.getAllLanguagesLocale(),
+                localizationsDelegates: [
+                  // AppLocalizations.delegate,
+                  CustomLocalisationDelegate(),
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                ],
+                darkTheme: ThemeData(
+                  // useMaterial3: false,
+                  popupMenuTheme: PopupMenuThemeData(
+                    surfaceTintColor: Colors.transparent,
+                    color: AppThemePreferences.popupMenuBgColorDark,
+                  ),
+                  bottomSheetTheme: BottomSheetThemeData(
+                    surfaceTintColor: Colors.transparent,
+                    backgroundColor: AppThemePreferences.bottomSheetBgColorDark,
+                  ),
+                  dialogBackgroundColor: AppThemePreferences.dialogBgColorDark,
+                  textSelectionTheme: TextSelectionThemeData(
+                    cursorColor: AppThemePreferences.appPrimaryColor,
+                    selectionHandleColor: AppThemePreferences.appPrimaryColor,
+                    selectionColor: AppThemePreferences.appPrimaryColorSwatch[300],
+                  ),
+                  splashColor: AppThemePreferences.selectedItemBackgroundColorDark,
+                  appBarTheme: AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.dark)),
+                  brightness: AppThemePreferences.systemBrightnessDark,
+                  scaffoldBackgroundColor: AppThemePreferences.backgroundColorDark,
+                  primaryColor: AppThemePreferences.appPrimaryColor,
+                  primarySwatch: AppThemePreferences.appPrimaryColorSwatch,
+                  iconTheme: IconThemeData(color: AppThemePreferences.appIconsMasterColorDark),
+                  // scaffoldBackgroundColor: AppThemePreferences.backgroundColorDark,
+                  cardColor: AppThemePreferences.cardColorDark,
+                  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                    backgroundColor: AppThemePreferences.bottomNavBarBackgroundColorDark,
+                    selectedItemColor: AppThemePreferences.bottomNavBarTintColor,
+                    unselectedItemColor: AppThemePreferences.unSelectedBottomNavBarTintColor,
+                  ),
+                  fontFamily: 'Dana',
+                  // widget.fontsHook!(localeProvider.locale!).isNotEmpty
+                  //     ? widget.fontsHook!(localeProvider.locale!)
+                  //     : checkRTLDirectionality(localeProvider.locale!)
+                  //     ? 'Cairo'
+                  //     : 'Rubik',
+                  dividerColor: AppThemePreferences.dividerColorDark,
+                ),
+                theme: ThemeData(
+                  // useMaterial3: false,
+                  popupMenuTheme: PopupMenuThemeData(
+                    surfaceTintColor: Colors.transparent,
+                    color: AppThemePreferences.popupMenuBgColorLight,
+                  ),
+                  bottomSheetTheme: BottomSheetThemeData(
+                    surfaceTintColor: Colors.transparent,
+                    backgroundColor: AppThemePreferences.bottomSheetBgColorLight,
+                  ),
+                  dialogBackgroundColor: AppThemePreferences.dialogBgColorLight,
+                  textSelectionTheme: TextSelectionThemeData(
+                    cursorColor: AppThemePreferences.appPrimaryColor,
+                    selectionHandleColor: AppThemePreferences.appPrimaryColor,
+                    selectionColor: AppThemePreferences.appPrimaryColorSwatch[300],
+                  ),
+                  splashColor: AppThemePreferences.selectedItemBackgroundColorLight,
+                  inputDecorationTheme: InputDecorationTheme(
+                    fillColor: AppThemePreferences.appPrimaryColor,
+                  ),
+                  appBarTheme: AppBarTheme(systemOverlayStyle: SystemUiOverlayStyle(statusBarBrightness: Brightness.light)),
+                  brightness: AppThemePreferences.systemBrightnessLight,
+                  // backgroundColor: AppThemePreferences.backgroundColorLight,
+                  primaryColor: AppThemePreferences.appPrimaryColor,
+                  primarySwatch: AppThemePreferences.appPrimaryColorSwatch,
+                  iconTheme: IconThemeData(color: AppThemePreferences.appIconsMasterColorLight),
+                  scaffoldBackgroundColor: AppThemePreferences.backgroundColorLight,
+                  fontFamily: 'Dana',
+                  // widget.fontsHook!(localeProvider.locale!).isNotEmpty
+                  // ? widget.fontsHook!(localeProvider.locale!)
+                  // : checkRTLDirectionality(localeProvider.locale!)
+                  //     ? 'Cairo'
+                  //     : 'Rubik',
+                  dividerColor: AppThemePreferences.dividerColorLight,
+                  bottomNavigationBarTheme: BottomNavigationBarThemeData(
+                    backgroundColor: AppThemePreferences.bottomNavBarBackgroundColorLight,
+                    selectedItemColor: AppThemePreferences.bottomNavBarTintColor,
+                    unselectedItemColor: AppThemePreferences.unSelectedBottomNavBarTintColor,
+                  ),
+                ),
+                themeMode: theme.getThemeMode(),
+                debugShowCheckedModeBanner: false,
+                home:MyHomePage()
+                // Provider<DeepLinkBloc>(
+                //   create: (context) => _bloc,
+                //   dispose: (context, bloc) => bloc.dispose(),
+                //   child: DeepLinkWidget(),
+                // ),
+                // home: MyHomePage(),
+              );
+            }
+        );
+      },
+    );
+  }
+
+//   Widget iconWidget({
+//   IconData iconData,
+//   Color color,
+// }){
+//     return Padding(
+//       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//       child: Icon(iconData, color: color));
+//   }
+//
+//   Widget buttonWidget({
+//   String title,
+//   void Function() onPressed,
+//   Color color,
+// }){
+//     return Padding(
+//       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+//       child: ElevatedButton(
+//         child: Text(title),
+//         onPressed: onPressed,
+//         style: ElevatedButton.styleFrom(primary: color),
+//       ),
+//     );
+//   }
 
 
+  bool checkRTLDirectionality(Locale locale) {
+    return Bidi.isRtlLanguage(locale.languageCode);
+  }
+}

@@ -1,47 +1,47 @@
 import 'package:flutter/material.dart';
-import 'package:houzi_package/blocs/property_bloc.dart';
-import 'package:houzi_package/common/constants.dart';
-import 'package:houzi_package/files/hooks_files/hooks_configurations.dart';
-import 'package:houzi_package/models/map_marker_data.dart';
-import 'package:houzi_package/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_properties_related_widgets/latest_featured_properties_widget/properties_carousel_list_widget.dart';
-import 'package:houzi_package/providers/state_providers/locale_provider.dart';
-import 'package:houzi_package/files/app_preferences/app_preferences.dart';
-import 'package:houzi_package/files/configurations/app_configurations.dart';
-import 'package:houzi_package/files/generic_methods/utility_methods.dart';
-import 'package:houzi_package/files/hive_storage_files/hive_storage_manager.dart';
-import 'package:houzi_package/houzi_main.dart';
-import 'package:houzi_package/files/hooks_files/hooks_v2_interface.dart';
-import 'package:houzi_package/l10n/l10n.dart';
-import 'package:houzi_package/models/article.dart';
-import 'package:houzi_package/models/drawer_menu_item.dart';
-import 'package:houzi_package/models/realtor_model.dart';
-import 'package:houzi_package/pages/crm_pages/crm_activities/activities_from_board.dart';
-import 'package:houzi_package/pages/crm_pages/crm_deals/deals_from_board.dart';
-import 'package:houzi_package/pages/crm_pages/crm_inquiry/inquiries_from_board.dart';
-import 'package:houzi_package/pages/crm_pages/crm_leads/leads_from_board.dart';
-import 'package:houzi_package/pages/home_page_screens/home_elegant_related/related_widgets/home_elegant_sliver_app_bar.dart';
-import 'package:houzi_package/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_drawer_widgets/home_screen_drawer_widget.dart';
-import 'package:houzi_package/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_realtors_related_widgets/home_screen_realtors_list_widget.dart';
-import 'package:houzi_package/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_sliver_app_bar_widgets/default_right_bar_widget.dart';
-import 'package:houzi_package/pages/home_screen_drawer_menu_pages/all_agents.dart';
-import 'package:houzi_package/pages/home_screen_drawer_menu_pages/settings_page.dart';
-import 'package:houzi_package/pages/home_screen_drawer_menu_pages/user_related/phone_sign_in_widgets/user_get_phone_number.dart';
-import 'package:houzi_package/pages/home_screen_drawer_menu_pages/user_related/user_profile.dart';
-import 'package:houzi_package/pages/map_view.dart';
+import 'package:jakojast/blocs/property_bloc.dart';
+import 'package:jakojast/common/constants.dart';
+import 'package:jakojast/files/hooks_files/hooks_configurations.dart';
+import 'package:jakojast/models/map_marker_data.dart';
+import 'package:jakojast/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_properties_related_widgets/latest_featured_properties_widget/properties_carousel_list_widget.dart';
+import 'package:jakojast/providers/state_providers/locale_provider.dart';
+import 'package:jakojast/files/app_preferences/app_preferences.dart';
+import 'package:jakojast/files/configurations/app_configurations.dart';
+import 'package:jakojast/files/generic_methods/utility_methods.dart';
+import 'package:jakojast/files/hive_storage_files/hive_storage_manager.dart';
+import 'package:jakojast/main.dart';
+import 'package:jakojast/files/hooks_files/hooks_v2_interface.dart';
+import 'package:jakojast/l10n/l10n.dart';
+import 'package:jakojast/models/article.dart';
+import 'package:jakojast/models/drawer_menu_item.dart';
+import 'package:jakojast/models/realtor_model.dart';
+import 'package:jakojast/pages/crm_pages/crm_activities/activities_from_board.dart';
+import 'package:jakojast/pages/crm_pages/crm_deals/deals_from_board.dart';
+import 'package:jakojast/pages/crm_pages/crm_inquiry/inquiries_from_board.dart';
+import 'package:jakojast/pages/crm_pages/crm_leads/leads_from_board.dart';
+import 'package:jakojast/pages/home_page_screens/home_elegant_related/related_widgets/home_elegant_sliver_app_bar.dart';
+import 'package:jakojast/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_drawer_widgets/home_screen_drawer_widget.dart';
+import 'package:jakojast/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_realtors_related_widgets/home_screen_realtors_list_widget.dart';
+import 'package:jakojast/pages/home_page_screens/parent_home_related/home_screen_widgets/home_screen_sliver_app_bar_widgets/default_right_bar_widget.dart';
+import 'package:jakojast/pages/home_screen_drawer_menu_pages/all_agents.dart';
+import 'package:jakojast/pages/home_screen_drawer_menu_pages/settings_page.dart';
+import 'package:jakojast/pages/home_screen_drawer_menu_pages/user_related/phone_sign_in_widgets/user_get_phone_number.dart';
+import 'package:jakojast/pages/home_screen_drawer_menu_pages/user_related/user_profile.dart';
+import 'package:jakojast/pages/map_view.dart';
 
-import 'package:houzi_package/pages/property_details_related_pages/pd_widgets_listing.dart';
-import 'package:houzi_package/widgets/article_box_widgets/article_box_design.dart';
-import 'package:houzi_package/widgets/explore_by_type_design_widgets/explore_by_type_design.dart';
-import 'package:houzi_package/widgets/filter_page_widgets/term_picker_related/term_picker.dart';
-import 'package:houzi_package/widgets/generic_text_field_widgets/text_field_widget.dart';
+import 'package:jakojast/pages/property_details_related_pages/pd_widgets_listing.dart';
+import 'package:jakojast/widgets/article_box_widgets/article_box_design.dart';
+import 'package:jakojast/widgets/explore_by_type_design_widgets/explore_by_type_design.dart';
+import 'package:jakojast/widgets/filter_page_widgets/term_picker_related/term_picker.dart';
+import 'package:jakojast/widgets/generic_text_field_widgets/text_field_widget.dart';
 
-import 'package:houzi_package/pages/property_details_related_pages/bottom_buttons_action_bar.dart';
-import 'package:houzi_package/pages/property_details_related_pages/pd_widgets_listing.dart';
-import 'package:houzi_package/widgets/article_box_widgets/article_box_design.dart';
-import 'package:houzi_package/widgets/custom_segment_widget.dart';
-import 'package:houzi_package/widgets/explore_by_type_design_widgets/explore_by_type_design.dart';
-import 'package:houzi_package/widgets/generic_text_field_widgets/text_field_widget.dart';
-import 'package:houzi_package/widgets/generic_text_widget.dart';
+import 'package:jakojast/pages/property_details_related_pages/bottom_buttons_action_bar.dart';
+import 'package:jakojast/pages/property_details_related_pages/pd_widgets_listing.dart';
+import 'package:jakojast/widgets/article_box_widgets/article_box_design.dart';
+import 'package:jakojast/widgets/custom_segment_widget.dart';
+import 'package:jakojast/widgets/explore_by_type_design_widgets/explore_by_type_design.dart';
+import 'package:jakojast/widgets/generic_text_field_widgets/text_field_widget.dart';
+import 'package:jakojast/widgets/generic_text_widget.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 
 class HooksV2 implements HooksV2Interface{
@@ -235,7 +235,6 @@ class HooksV2 implements HooksV2Interface{
       /// Copy and Paste the sample code provide below.
       ///
       /// Replace the 'HOOK_NAME' with that specific hookName that you define in
-      /// json via Houzi Builder Desktop application and replace your
       /// Custom widget with 'WIDGET'.
       ///
       /// You are provided with the Property Article Information as the object
@@ -374,7 +373,6 @@ class HooksV2 implements HooksV2Interface{
       /// return name of the home you want to make it default
       return "";
 
-      /// Make it empty if you want to set your default home from HOUZI-BUILDER
       /// e.g return "";
     };
 
@@ -394,11 +392,6 @@ class HooksV2 implements HooksV2Interface{
   @override
   SettingsHook getSettingsItemHook() {
     SettingsHook settingsHook = (BuildContext context){
-      ///
-      ///
-      /// For info about adding Setting item visit below link:
-      /// https://houzi-docs.booleanbites.com/hooks-widgets/add_item_settings/
-
       List<dynamic> settingsItemHookList = [
         // Add menu item map here
       ];
@@ -412,10 +405,6 @@ class HooksV2 implements HooksV2Interface{
   @override
   ProfileHook getProfileItemHook() {
     ProfileHook profileHook = (BuildContext context){
-      ///
-      ///
-      /// For info about adding Profile item visit below link:
-      /// https://houzi-docs.booleanbites.com/hooks-widgets/add_item_profile/
 
       List<Widget> profileItemHookList = [
         // Add menu item map here
@@ -428,11 +417,6 @@ class HooksV2 implements HooksV2Interface{
   @override
   HomeRightBarButtonWidgetHook getHomeRightBarButtonWidgetHook() {
     HomeRightBarButtonWidgetHook homeRightBarButtonWidgetHook = (BuildContext context) {
-      ///
-      ///
-      /// For info about customizing Home Right Bar Button Id Widget visit below link:
-      /// https://houzi-docs.booleanbites.com/hooks-widgets/customize_home_right_bar_button_widget/
-
       Widget? rightBarButtonHook;
       // Widget rightBarButtonHook = DefaultRightBarButtonIdWidget();
 
@@ -459,9 +443,6 @@ class HooksV2 implements HooksV2Interface{
 
   @override
   MarkerIconHook getMarkerIconHook() {
-    /// For info about how to add custom marker icon go to
-    /// https://houzi-docs.booleanbites.com/hooks-widgets/set_marker_icon/
-
     MarkerIconHook markerIconHook = (BuildContext context, Article article) {
       /// If you want to set the default Pin Point marker return null
       /// else return the path of the image
@@ -475,9 +456,6 @@ class HooksV2 implements HooksV2Interface{
 
   @override
   CustomMarkerHook getCustomMarkerHook() {
-    /// For info about how to add custom marker go to
-    /// https://houzi-docs.booleanbites.com/hooks-widgets/set_custom_marker/
-
     CustomMarkerHook markerIconHook = (BuildContext context, Article article) {
       /// If you want to set the default Pin Point marker return null
       /// else return the title, background, title-color and an optional text style
@@ -506,10 +484,6 @@ class HooksV2 implements HooksV2Interface{
 
   @override
   CompactPriceFormatterHook getCompactPriceFormatterHook() {
-    /// If you want to format price on Property Card use this method.
-    /// If you want to use Houzi pre define formatter than return null
-    ///
-    ///
     CompactPriceFormatterHook compactPriceFormatterHook = (String inputPrice) {
       // Define your own method here and return the formatted string
 
@@ -845,8 +819,6 @@ class HooksV2 implements HooksV2Interface{
 
       /// Copy and Paste the sample code provide below.
       ///
-      /// Replace the 'HOOK_NAME' with that specific hookName that you define in
-      /// json via Houzi Builder Desktop application and replace your
       /// Custom widget with 'WIDGET'.
       ///
       ///
@@ -868,12 +840,6 @@ class HooksV2 implements HooksV2Interface{
         String? hookName,
         bool isRefreshed) {
 
-      /// Copy and Paste the sample code provide below.
-      ///
-      /// Replace the 'HOOK_NAME' with that specific hookName that you define in
-      /// json via Houzi Builder Desktop application and replace your
-      /// Custom widget with 'WIDGET'.
-      ///
       /// Whenever the home is refreshed, 'isRefreshed' will return true, if you
       /// want to perform anything when the home refreshes, you can use the
       /// 'isRefreshed'
@@ -980,10 +946,6 @@ class HooksV2 implements HooksV2Interface{
         String? hookName,
         ) {
 
-      /// Copy and Paste the sample code provide below.
-      ///
-      /// Replace the 'HOOK_NAME' with that specific hookName that you define in
-      /// json via Houzi Builder Desktop application and replace your
       /// Custom widget with 'WIDGET'.
       ///
       ///
